@@ -2,7 +2,6 @@
 
 USUARIO_ATUAL="$(logname)"
 HOME_DIR="$HOME"
-
 CONTAINER="$HOME_DIR/container.img"
 MAPPER="cryptcontainer"
 PONTO_MONTAGEM="$HOME_DIR/jogos"
@@ -172,5 +171,5 @@ echo """
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠙⠛⠋⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
 """
-echo "Criado por Nexamos em homenagem a o Sr. Pegasus - 2025"
+echo "Criado por Nexamos em homenagem ao Sr. Pegasus - 2025"
 echo "Ilusões Industriais"
