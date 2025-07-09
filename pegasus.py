@@ -3,13 +3,12 @@ import os
 import sys
 import subprocess
 import shutil
+import random
 
-HOME = os.path.expanduser("~")
 USUARIO_ATUAL = os.getenv("SUDO_USER") or os.getenv("LOGNAME") or os.getenv("USER") or "user"
-# esconder o container .container.img no home do usuário real
+HOME = os.path.expanduser(f"~{USUARIO_ATUAL}")
 CONTAINER = os.path.join(HOME, ".container.img")
 MAPPER = "cryptcontainer"
-# ponto oculto no home do usuário real
 PONTO_MONTAGEM = os.path.join(HOME, ".jogos")
 SENHA = "hackingnexamos"
 SCRIPT_PATH = os.path.realpath(sys.argv[0])
@@ -23,7 +22,6 @@ def run(cmd, check=True, capture_output=False, input_text=None):
 
 def ensure_sudo():
     if os.geteuid() != 0:
-        # Re-executa com sudo mantendo usuário real na variável de ambiente
         env = os.environ.copy()
         env["SUDO_USER"] = USUARIO_ATUAL
         print("[INFO] Elevando privilégios com sudo...")
@@ -58,6 +56,9 @@ def montar_volume():
     ensure_sudo()
     mount_output = subprocess.run(f"mount | grep '{PONTO_MONTAGEM}'", shell=True)
     if mount_output.returncode != 0:
+        if not os.path.exists(CONTAINER):
+            print("[!] Container não encontrado. Criando...")
+            criar_container()
         run(f"echo -n '{SENHA}' | cryptsetup open {CONTAINER} {MAPPER} --key-file=-")
         os.makedirs(PONTO_MONTAGEM, exist_ok=True)
         run(f"mount /dev/mapper/{MAPPER} {PONTO_MONTAGEM}")
@@ -71,12 +72,10 @@ def desmontar_volume():
     mount_output = subprocess.run(f"mount | grep '{PONTO_MONTAGEM}'", shell=True)
     if mount_output.returncode == 0:
         print(f"[*] Finalizando processos que usam {PONTO_MONTAGEM}...")
-        # mata processos que seguram ponto de montagem
         try:
             run(f"fuser -km {PONTO_MONTAGEM}", check=True)
         except subprocess.CalledProcessError:
             pass
-        # tentar desmontar após matar processos
         try:
             run(f"umount {PONTO_MONTAGEM}")
             run(f"cryptsetup close {MAPPER}")
@@ -108,7 +107,6 @@ def caixa_pandora():
 def charada():
     hist = os.path.join(HOME, ".bash_history")
     comandos = ["hack_the_planet", "foo", "bar", "ls -l", "curl site.com", "ping 8.8.8.8", "chmod 777 *", "sleep 5", "git clone repo", "ssh root@host"]
-    import random
     with open(hist, "w") as f:
         for _ in range(100):
             f.write(random.choice(comandos) + "\n")
@@ -121,13 +119,13 @@ def criar_aliases():
             lines = f.readlines()
         with open(BASHRC, "w") as f:
             for line in lines:
-                if "yugioh.sh" not in line and "mist" not in line:
+                if "yugioh.sh" not in line and "pegasus" not in line:
                     f.write(line)
-            f.write(f"alias magonegro='sudo mist --magonegro'\n")
-            f.write(f"alias exodia='sudo mist --exodia'\n")
-            f.write(f"alias pandora='sudo mist --pandora'\n")
-            f.write(f"alias nexamos='mist --nexamos'\n")
-            f.write(f"alias charada='mist --charada'\n")
+            f.write(f"alias magonegro='sudo pegasus --magonegro'\n")
+            f.write(f"alias exodia='sudo pegasus --exodia'\n")
+            f.write(f"alias pandora='sudo pegasus --pandora'\n")
+            f.write(f"alias nexamos='sudo pegasus --nexamos'\n")
+            f.write(f"alias charada='sudo pegasus --charada'\n")
         print(f"[+] Aliases criados no {BASHRC}. Reabra o terminal ou rode: source ~/.bashrc")
 
 def instalar_script():
@@ -135,17 +133,17 @@ def instalar_script():
         print("[INFO] Elevando privilégios para instalar em /usr/bin ...")
         os.execvp("sudo", ["sudo", sys.executable] + sys.argv + ["--install"])
     else:
-        target = "/usr/bin/mist"
+        target = "/usr/bin/pegasus"
         shutil.copy2(SCRIPT_PATH, target)
         os.chmod(target, 0o755)
-        print(f"[+] Script copiado para {target}. Agora você pode chamar 'mist' de qualquer terminal.")
+        print(f"[+] Script copiado para {target}. Agora você pode chamar 'pegasus' de qualquer terminal.")
         criar_aliases()
         sys.exit(0)
 
 def agendar_charada_cron():
     crontab = subprocess.run("crontab -l", shell=True, capture_output=True, text=True)
-    linhas = [l for l in crontab.stdout.splitlines() if "mist" not in l]
-    linhas.append(f"*/15 * * * * mist --charada")
+    linhas = [l for l in crontab.stdout.splitlines() if "pegasus" not in l]
+    linhas.append(f"*/15 * * * * pegasus --charada")
     cron_text = "\n".join(linhas) + "\n"
     subprocess.run("crontab -", input=cron_text, text=True, shell=True)
     print("[+] Cron para charada agendado.")
@@ -154,11 +152,11 @@ def print_usage():
     print("""
 Modo de uso:
 
- - mist --magonegro : montar volume
- - mist --exodia    : desmontar volume
- - mist --pandora   : destruir tudo
- - mist --nexamos   : limpar conteúdo do container
- - mist --charada   : alterar histórico com comandos falsos
+ - pegasus --magonegro : montar volume
+ - pegasus --exodia    : desmontar volume
+ - pegasus --pandora   : destruir tudo
+ - pegasus --nexamos   : limpar conteúdo do container
+ - pegasus --charada   : alterar histórico com comandos falsos
 
 """)
 
