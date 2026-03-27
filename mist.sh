@@ -1,0 +1,135 @@
+#!/bin/bash
+
+# Aetherveil: Véu Total
+# — grimório completo de evasão, camuflagem e esvanecimento digital
+
+trap 'echo -e "\e[1;31m⛧ O Véu estremece... interrompido por mãos impuras.\e[0m"; exit 66' SIGINT
+
+## 🜁 Elementos básicos
+declare -A RUNAS
+RUNAS=(
+    [tor]="tor"
+    [proxychains]="proxychains4"
+    [torsocks]="torsocks"
+    [curl]="curl"
+    [iptables]="iptables"
+    [jq]="jq"
+    [cron]="cron"
+)
+
+UA_LIST=(
+    "Mozilla/5.0 (X11; Linux x86_64)"
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)"
+)
+
+## ✸ Validação dos Guardiões
+function _guardae() {
+    for spell in "${!RUNAS[@]}"; do
+        command -v "${RUNAS[$spell]}" &>/dev/null || {
+            echo -e "\e[1;31m✘ Guardião ${RUNAS[$spell]} ausente do templo.\e[0m"
+            exit 13
+        }
+    done
+    echo -e "\e[1;32m✔ Guardiões despertos.\e[0m"
+}
+
+## ✸ Conjuração inicial
+function umbrae_fire() {
+    echo -e "\e[1;34m☽ Invocando Véu... conectando ao labirinto.\e[0m"
+    systemctl start tor &>/dev/null
+    sleep 2
+
+    iptables -F
+    iptables -t nat -F
+    iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports 9050
+    iptables -t nat -A OUTPUT -p tcp --dport 443 -j REDIRECT --to-ports 9050
+
+    export http_proxy="socks5://127.0.0.1:9050"
+    export https_proxy="socks5://127.0.0.1:9050"
+    export all_proxy="socks5://127.0.0.1:9050"
+
+    velum
+    _webrtc_chain
+    sigil_persist
+    nexus_loop &
+}
+
+## ✸ Troca de forma do navegador
+function velum() {
+    ua=${UA_LIST[$RANDOM % ${#UA_LIST[@]}]}
+    export VEIL_UA="$ua"
+    echo -e "\e[0;35m🜁 Máscara atual: $VEIL_UA\e[0m"
+}
+
+## ✸ Bloqueio de WebRTC (UDP)
+function _webrtc_chain() {
+    iptables -A OUTPUT -p udp --dport 3478 -j DROP
+    iptables -A OUTPUT -p udp --dport 5349 -j DROP
+    iptables -A OUTPUT -p udp --dport 19302 -j DROP
+    echo -e "\e[0;33m🕸 WebRTC selado no círculo.\e[0m"
+}
+
+## ✸ Nova identidade por Tor
+function nexus_shift() {
+    printf 'AUTHENTICATE ""\r\nSIGNAL NEWNYM\r\n' | nc 127.0.0.1 9051 &>/dev/null
+    echo -e "\e[1;36m♻ Véu transfigurado: nova identidade tecida.\e[0m"
+}
+
+## ✸ Loop eterno de metamorfose
+function nexus_loop() {
+    while true; do
+        nexus_shift
+        velum
+        sleep 60
+    done
+}
+
+## ✸ Purificação do passado
+function abyss_cleanse() {
+    echo -e "\e[1;31m☠ Apagando ecos do ritual...\e[0m"
+    shred -zuf ~/.bash_history ~/.zsh_history ~/.cache/*.log ~/.local/share/recently-used.xbel &>/dev/null
+> ~/.bash_history
+    history -c
+    echo -e "\e[0;31m✴ O passado se perdeu na neblina.\e[0m"
+}
+
+## ✸ Persistência espectral
+function sigil_persist() {
+    echo "@reboot root bash $(realpath "$0") sombra" > /etc/cron.d/.sigil
+    chmod 600 /etc/cron.d/.sigil
+    echo -e "\e[0;32m♼ Gravado no grimório do sistema.\e[0m"
+}
+
+## ✸ Modo silencioso
+function sombra() {
+    umbrae_fire &>/dev/null
+}
+
+## ✸ Desintegração
+function exilium() {
+    echo -e "\e[1;31m☠ Ritual consumido. Desaparecendo...\e[0m"
+    rm -- "$0"
+    rm -rf /etc/cron.d/.sigil
+    exit 0
+}
+
+## ✸ Grimório do Usuário
+function grimorio() {
+    echo -e "\e[1;36m☥ Aetherveil: Véu Total\e[0m"
+    echo -e "  \e[0;31maetherveil start\e[0m   — invoca o véu completo"
+    echo -e "  \e[0;33maetherveil nexus\e[0m   — nova identidade"
+    echo -e "  \e[0;35maetherveil purge\e[0m   — apaga rastros"
+    echo -e "  \e[0;32maetherveil exilium\e[0m — autodestruição"
+}
+
+## ✸ Execução
+_guardae
+case "$1" in
+    start) umbrae_fire ;;
+    nexus) nexus_shift ;;
+    purge) abyss_cleanse ;;
+    sombra) sombra ;;
+    exilium) exilium ;;
+    *) grimorio ;;
+esac

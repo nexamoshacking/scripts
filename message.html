@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>O SINAL PERMANECE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:100%;height:100%;
+  background:#000;color:#cfcfcf;
+  font-family:'Share Tech Mono',monospace;
+  overflow:hidden;
+}
+
+/* PULSO GLOBAL */
+body{animation:pulse 10s infinite}
+@keyframes pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(.95)}}
+
+/* RUÍDO */
+body::before{
+  content:"";position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
+}
+
+/* SCANLINES */
+.scanlines{
+  position:fixed;inset:0;z-index:20;pointer-events:none;
+  background:repeating-linear-gradient(
+    to bottom,rgba(255,255,255,.04),rgba(255,255,255,.04) 1px,
+    transparent 1px,transparent 4px);
+}
+
+/* VINHETA */
+.vignette{
+  position:fixed;inset:0;z-index:21;pointer-events:none;
+  box-shadow:inset 0 0 420px rgba(0,0,0,.97);
+}
+
+/* DISTORÇÃO */
+.distort{
+  position:fixed;inset:0;z-index:19;pointer-events:none;
+  animation:distort 16s infinite linear;
+}
+@keyframes distort{
+  0%,100%{backdrop-filter:blur(0)}
+  50%{backdrop-filter:blur(1.2px)}
+}
+
+/* CONTAINER */
+.container{
+  position:relative;z-index:3;width:100%;height:100%;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  animation:float 18s infinite ease-in-out;
+}
+@keyframes float{
+  0%,100%{transform:translate(0)}
+  50%{transform:translate(6px,-8px)}
+}
+
+/* IMAGEM CENTRAL */
+.image-wrapper{
+  padding:18px;
+  border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 0 90px rgba(255,255,255,.22), inset 0 0 50px rgba(255,255,255,.12);
+}
+
+.image{
+  width:48vw;max-width:520px;
+  height:48vw;max-height:520px;
+
+  background-image:url("https://cinema10.com.br/upload/filmes/filmes_16344_maxresdefault-1.jpg");
+  background-size:cover;
+  background-position:center;
+
+  filter:grayscale(100%) contrast(1.4);
+  opacity:0;
+
+  animation:
+    glitch 3s infinite,
+    breathe 7s infinite,
+    fadeImage 11s infinite;
+}
+
+@keyframes glitch{
+  0%{transform:translate(0)}
+  20%{transform:translate(-3px,1px)}
+  40%{transform:translate(3px,-2px)}
+  60%{transform:translate(-2px,2px)}
+  80%{transform:translate(2px,-1px)}
+  100%{transform:translate(0)}
+}
+@keyframes breathe{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.03)}
+}
+@keyframes fadeImage{
+  0%{opacity:0}
+  15%{opacity:1}
+  60%{opacity:1}
+  100%{opacity:0}
+}
+
+/* TEXTO */
+.text-block{
+  margin-top:26px;
+  text-align:center;
+  font-size:13px;
+  letter-spacing:3px;
+  opacity:.85;
+}
+.text-block span{display:block;margin:4px 0}
+
+/* WHISPERS */
+.whispers{
+  position:absolute;inset:0;
+  z-index:2;font-size:11px;
+  opacity:.28;pointer-events:none;
+}
+.whispers div{
+  position:absolute;
+  white-space:nowrap;
+  animation:fade 14s infinite;
+}
+@keyframes fade{
+  0%,100%{opacity:.15}
+  50%{opacity:.45}
+}
+
+/* TERMINAL */
+.terminal{
+  position:fixed;
+  bottom:48px;left:18px;
+  z-index:6;font-size:12px;opacity:.75;
+}
+
+/* FLASH */
+.flash{
+  position:fixed;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:10;
+  font-size:26px;
+  letter-spacing:6px;
+  opacity:0;pointer-events:none;
+}
+
+/* FOOTER */
+.footer{
+  position:fixed;
+  bottom:14px;left:14px;
+  z-index:7;font-size:11px;opacity:.55;
+}
+</style>
+</head>
+
+<body>
+
+<!--
+NÃO SIGA LINKS
+OBSERVE INTERVALOS
+A RESPOSTA NÃO ESTÁ NA TELA
+-->
+
+<div class="container">
+  <div class="image-wrapper">
+    <div class="image" data-key="010010010100111001010100010001010101001001010110010000010100110001001111"></div>
+  </div>
+
+  <div class="text-block">
+    <span>Nexamos</span>
+    <span>Apenas deface</span>
+
+    <span></span>
+<span>As sombras já sabem o que foi revelado</span>
+<span>Nem todo silêncio é proteção</span>
+<span>A névoa observa, paciente</span>
+
+
+    <span></span>
+
+
+    <span></span>
+
+<span>Os sinais já foram registrados</span>
+<span>Quem observa não esquece</span>
+
+  </div>
+</div>
+
+<div class="whispers">
+  <div style="top:10%;left:6%">NÃO LEIA EM LINHA RETA</div>
+  <div style="top:22%;right:8%">O INTERVALO IMPORTA</div>
+  <div style="bottom:18%;left:12%">REMOVA ANTES DE SOMAR</div>
+  <div style="bottom:14%;right:14%">O OLHO CANSA</div>
+  <div style="top:50%;left:2%;transform:rotate(-90deg)">NADA É DECORATIVO</div>
+  <div style="top:50%;right:2%;transform:rotate(90deg)">ESPERE</div>
+</div>
+
+<div class="terminal" id="terminal"></div>
+<div class="flash" id="flash"></div>
+
+<div class="footer">root@void:/signal# listen --passive</div>
+
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div class="distort"></div>
+
+<script>
+/* TERMINAL */
+const logs=[
+  "canal aberto",
+  "ruído aceito como sinal",
+  "observador detectado",
+  "padrão recorrente",
+  "tempo como variável",
+  "aguarde"
+];
+let li=0;
+const term=document.getElementById("terminal");
+(function type(){
+  if(li>=logs.length) return;
+  let t=logs[li++],i=0,d=document.createElement("div");
+  term.appendChild(d);
+  let it=setInterval(()=>{
+    d.textContent+=t[i++]||"";
+    if(i>t.length){clearInterval(it);setTimeout(type,900)}
+  },55);
+})();
+
+/* FLASH */
+const flashes=["OBSERVE","INTERVALO","REMOVA","PADRÃO","SILÊNCIO"];
+setInterval(()=>{
+  const f=document.getElementById("flash");
+  f.textContent=flashes[Math.floor(Math.random()*flashes.length)];
+  f.style.opacity=.22;
+  setTimeout(()=>f.style.opacity=0,100);
+},100);
+</script>
+
+</body>
+</html>
